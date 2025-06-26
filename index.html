@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Front Camera Test</title>
+</head>
+<body>
+  <h2>Camera Snapshot</h2>
+  <video id="video" width="320" height="240" autoplay></video><br><br>
+  <button id="snap">📸 Take Picture</button><br><br>
+  <canvas id="canvas" width="320" height="240" style="border:1px solid black;"></canvas><br>
+  <button onclick="downloadImage()">💾 Save Image</button>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const snapButton = document.getElementById('snap');
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+      .then(function(stream) {
+        video.srcObject = stream;
+      })
+      .catch(function(err) {
+        console.error("Camera access error:", err);
+      });
+
+    snapButton.addEventListener('click', function() {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    });
+
+    function downloadImage() {
+      const image = canvas.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = image;
+      a.download = "snapshot.png";
+      a.click();
+    }
+  </script>
+</body>
+</html>
